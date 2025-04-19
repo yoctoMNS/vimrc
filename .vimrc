@@ -1,26 +1,13 @@
 "-----------------------------------------------------------------
-" Plugin
+" Encoding
 "-----------------------------------------------------------------
-call plug#begin()
-    Plug 'neoclide/coc.nvim', {'branch': 'release'},
-    Plug 'scrooloose/syntastic',
-    Plug 'fatih/vim-go',
-    Plug 'vim-scripts/java_getset.vim',
-    Plug 'yegappan/mru',
-    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-    Plug 'junegunn/fzf.vim',
+call plug#begin('~/.vim/plugged')
+    Plug 'uiiaoo/java-syntax.vim'
 call plug#end()
 
 "-----------------------------------------------------------------
-" color scheme
+" Encoding
 "-----------------------------------------------------------------
-colorscheme torte
-" colorscheme desert
-
-"-----------------------------------------------------------------
-" font
-"-----------------------------------------------------------------
-" Encoding=====================
 set encoding=utf-8
 set fileencodings=utf-8,euc-jp,sjis,cp932,iso-2022-jp
 set fileencodings=utf-8,euc-jp,sjis
@@ -52,7 +39,6 @@ set clipboard+=unnamed
 "-----------------------------------------------------------------
 " appearance
 "-----------------------------------------------------------------
-set number
 set cursorline
 " set visualbell
 set showmatch
@@ -78,7 +64,8 @@ set hlsearch
 "-----------------------------------------------------------------
 " key mapping
 "-----------------------------------------------------------------
-nmap <Esc><Esc> :nohlsearch<Return>
+nnoremap <Esc><Esc> :nohlsearch<Return>
+inoremap ;lkj <Esc>:w<CR>
 inoremap <C-]> <Esc>
 nnoremap ss :<C-u>sp<CR>
 nnoremap sv :<C-u>vs<CR>
@@ -96,130 +83,164 @@ nnoremap <C-S-k> <C-w>-
 nnoremap <C-S-l> <C-w>>
 noremap ; :
 nnoremap <C-n><C-t> :Ntree<Return>
-nnoremap <C-n><C-j> :lcd ~/Documents/jdk-21<Return>:Files<Return>
 nnoremap <C-n><C-f> :lcd %:h<Return>
 nnoremap <C-n><C-s> :e ~/.vimrc<Return>
-inoremap <C-c><C-v> <Esc>bvey$pa;<Esc>bvu$a
 nnoremap <A-j> Vdp
 nnoremap <A-k> VdkP
-inoremap <C-d> <C-x><C-k>
-nnoremap <C-m><C-r> :MRU<Return>
-inoremap <C-Space> <C-x><C-o>
-" inoremap { {}<LEFT>
-" inoremap [ []<LEFT>
-" inoremap ( ()<LEFT>
-" inoremap \" \"\"<LEFT>
-" inoremap ' ''<LEFT>
-
-"-----------------------------------------------------------------
-" java
-"-----------------------------------------------------------------
-" filetype plugin indent on
-" set backspace=indent,eol,start
-" set omnifunc=syntaxcomplete#Complete
-" set suffixesadd=.java
-" set showcmd
-" autocmd Filetype java set makeprg=./build.sh
-" set errorformat=%A%f:%l:\ %m,%-Z%p^,%-C%.%#
-" nnoremap <F9> :make<Return>:copen<Return>
-" nnoremap <F10> :cprevious<Return>
-" nnoremap <F11> :cnext<Return>
-" nnoremap <C-S-i> :JIG<Return>
-" nnoremap <C-S-o> :JI<Return>:JIS<Return>G%k$a<Return><Esc>
-" nnoremap <F3> :JIF<Return>
-" "Java Getter"
-" nnoremap gg hv^wyGOpublic <Esc>pvbyvUiget<Esc>$a() {<Return>return <Esc>pa;<Return>}<Return><Esc>
-" "Java Setter"
-" nnoremap gs hv^wyGOpublic void set(<Esc>pa) {<Esc>bbvey^wwwPblllvU$a<Return>this.<Esc>pa = <Esc>pa;<Return>}<Return><Esc>
-" "Java Getter & Setter"
-" nnoremap gd hv^wyGOpublic void set(<Esc>pa) {<Esc>bbvey^wwwPblllvU$a<Return>this.<Esc>pa = <Esc>pa;<Return>}<Return><Esc>3k$T(vt)yGOpublic <Esc>pvbyvUiget<Esc>$a() {<Return>return <Esc>pa;<Return>}<Return><Esc>
-" "Java Insert Class Snippet"
-" nnoremap <C-c><C-c> i<C-r>=expand('%:r')<Return><Esc>T/hv^dIpublic<Space>class<Space><Esc>$a<Space>{<Return>}<Esc>gg$a<Return>
-" "Java Insert Package Snippet"
-" inoremap <C-c><C-u> i<C-r>=expand('%:r')<Return><Esc>^vt/ld$vbhdV:s/\//\./g<Return>
-" " Ipackage<Space><Esc>$a;<Return><Esc>
-" "Java Override"
-" inoremap <C-c><C-o> @Override<Return>
-" "Java Import Snippet"
-" inoremap <C-c><C-i> import<Space>;<Left>
-" "Java Implements"
-" inoremap <C-c><C-p> implements<Space>
-" "Java Extends"
-" inoremap <C-c><C-n> extends<Space>
-" "Java System.out.print"
-" inoremap <C-c><C-j> System.out.print();<Left><left>
-" "Java System.out.println"
-" inoremap <C-c><C-k> System.out.println();<Left><left>
-" "Java System.out.printf"
-" inoremap <C-c><C-l> System.out.printf();<Left><left>
-" "Java Main Method Snippet"
-" inoremap <C-c><C-m> public<Space>static<Space>void<Space>main(String[]<Space>args)<Space>{<Return>}<Esc>k$a<Return>
-" "Java Implements Abstract Method"
-" nnoremap <C-r><C-r> G%jVG:s/public/@Override\r\tpublic/g<Return><Esc>G%jVG:s/abstract //g<Return>G%jVG:s/;/<Space>{\r\t}\r/g<Return>
-" "Java Implements Interface Method"
-" vnoremap <C-r><C-i> :s/;/<Space>{\r\t}\r/g<Return>
-" "Java Add Override Annotations"
-" vnoremap <C-r><C-o> :s/public/@Override\r\tpublic/g<Return>
-
-"-----------------------------------------------------------------
-" javaid.vim
-"-----------------------------------------------------------------
-set sm
-set ai
-:let java_highlight_all=1
-:let java_allow_cpp_keywords=1
-:let java_highlight_debug=1
-:let java_space_errors=1
-:let java_highlight_functions=1
-
-"-----------------------------------------------------------------
-" buffer
-"-----------------------------------------------------------------
 nnoremap <silent> <C-j> :bprev<CR>
 nnoremap <silent> <C-k> :bnext<CR>
 
 "-----------------------------------------------------------------
-" transparencey
+" java
 "-----------------------------------------------------------------
-" autocmd FocusGained * set transparency=200
-" autocmd FocusLost * set transparency=150
+inoremap <C-c><C-v> <Esc>bvey$pa;<Esc>bvu$a
+" Java Insert Class Snippet
+nnoremap <C-c><C-c> i<C-r>=expand('%:r')<Return><Esc>T/hv^dIpublic<Space>class<Space><Esc>$a<Space>{<Return>}<Esc>gg$a<Return>
+" Java Insert Package Snippet
+inoremap <C-c><C-u> i<C-r>=expand('%:r')<Return><Esc>^vt/ld$vbhdV:s/\//\./g<Return>
+" Java Override
+inoremap <C-c><C-o> @Override<Return>
+" Java Import Snippet
+inoremap <C-c><C-i> import<Space>;<Left>
+" Java Implements
+inoremap <C-c><C-p> implements<Space>
+" Java Extends
+inoremap <C-c><C-n> extends<Space>
+" Java System.out.print
+inoremap <C-c><C-j> System.out.print();<Left><left>
+" Java System.out.println
+inoremap <C-c><C-k> System.out.println();<Left><left>
+" Java System.out.printf
+inoremap <C-c><C-l> System.out.printf();<Left><left>
+" Java Main Method Snippet
+inoremap <C-c><C-m> public<Space>static<Space>void<Space>main(String[]<Space>args)<Space>{<Return>}<Esc>k$a<Return>
+" Java Implements Abstract Method
+nnoremap <C-r><C-r> G%jVG:s/public/@Override\r\tpublic/g<Return><Esc>G%jVG:s/abstract //g<Return>G%jVG:s/;/<Space>{\r\t}\r/g<Return>
+" Java Implements Interface Method
+vnoremap <C-r><C-i> :s/;/<Space>{\r\t}\r/g<Return>
+" Java Add Override Annotations
+vnoremap <C-r><C-o> :s/public/@Override\r\tpublic/g<Return>
+" Java Getter
+function! GenerateJavaGetter()
+    " 現在行の解析
+    let current_line = getline('.')
+    let pattern = '^\s*\(\(public\|protected\|private\)\s\+\)\?\(\(static\|final\)\s\+\)*\([a-zA-Z_][a-zA-Z0-9_<>\[\]]*\)\s\+\([a-zA-Z_][a-zA-Z0-9_]*\)\s*\(=\s*[^;]*\)\?\s*;\s*$'
+    let matches = matchlist(current_line, pattern)
 
-"-----------------------------------------------------------------
-" fzf.vim
-"-----------------------------------------------------------------
-nnoremap <Space>f :Files<CR>
+    if empty(matches)
+        echo "Error: Not a Java member variable line!"
+        return
+    endif
 
-"-----------------------------------------------------------------
-" mru.vim
-"-----------------------------------------------------------------
-:let MRU_Max_Entries=20
+    " ゲッター生成
+    let type = matches[5]
+    let var_name = matches[6]
+    let getter_name = "get" . toupper(var_name[0]) . var_name[1:]
+    let getter = [
+        \ "",
+        \ "    public " . type . " " . getter_name . "() {",
+        \ "        return " . var_name . ";",
+        \ "    }"
+        \ ]
 
-"-----------------------------------------------------------------
-" vim-go
-"-----------------------------------------------------------------
-autocmd FileType go :highlight goErr cterm=bold ctermfg=214
-autocmd FileType go :match goErr /\<err\>/
-let g:go_diagnostics_enabled = 0
-let g:go_metalinter_enabled = []
-let g:go_jump_to_error = 0
-let g:go_fmt_command = "goimports"
-let g:go_auto_sameids = 0
-let g:go_highlight_types = 1
-let g:go_highlight_fields = 1
-let g:go_highlight_functions = 1
-let g:go_highlight_function_calls = 1
-let g:go_highlight_operators = 1
-let g:go_highlight_extra_types = 1
-let g:go_highlight_build_constraints = 1
-let g:go_highlight_generate_tags = 1
-let g:go_disable_autoinstall = 0
-let g:go_list_type = "quickfix"
-let g:go_fmt_command = "goimports"
+    " クラスの終わりを正確に検出（最後の閉じ括弧の前）
+    let class_end_line = search('^\s*}', 'bnW')
+    if class_end_line == 0
+        let class_end_line = line('$') " ファイル末尾をフォールバック
+    endif
 
-"-----------------------------------------------------------------
-" coc-vim
-"-----------------------------------------------------------------
-nnoremap <silent> <F1> <Plug>(coc-definition)
-nnoremap <silent> <F2> <Plug>(coc-rename)
-nnoremap <silent> <F3> <Plug>(coc-definition)
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
+    " 既存メソッドとの間に行挿入
+    call append(class_end_line - 1, getter)
+    echo "Generated: " . getter_name . "()"
+endfunction
+nnoremap <Leader>gj :call GenerateJavaGetter()<CR>
+
+" Java Setter
+function! GenerateJavaSetter()
+    " 現在行の解析
+    let current_line = getline('.')
+    let pattern = '^\s*\(\(public\|protected\|private\)\s\+\)\?\(\(static\|final\)\s\+\)*\([a-zA-Z_][a-zA-Z0-9_<>\[\]]*\)\s\+\([a-zA-Z_][a-zA-Z0-9_]*\)\s*;'
+    let matches = matchlist(current_line, pattern)
+
+    if empty(matches)
+        echo "Error: Not a Java member variable line!"
+        return
+    endif
+
+    " セッター生成
+    let type = matches[5]
+    let var_name = matches[6]
+    let setter_name = "set" . toupper(var_name[0]) . var_name[1:]
+    let setter = [
+        \ "",
+        \ "    public void " . setter_name . "(" . type . " " . var_name . ") {",
+        \ "        this." . var_name . " = " . var_name . ";",
+        \ "    }"
+        \ ]
+
+    " クラスの終わりを正確に検出（最後の閉じ括弧の前）
+    let class_end_line = search('^\s*}', 'bnW')
+    if class_end_line == 0
+        let class_end_line = line('$') " ファイル末尾をフォールバック
+    endif
+
+    " 既存メソッドとの間に行挿入
+    call append(class_end_line - 1, setter)
+    echo "Generated: " . setter_name . "()"
+endfunction
+
+nnoremap <Leader>gs :call GenerateJavaSetter()<CR>
+
+" Java Getter Setter
+function! GenerateJavaGetterSetter()
+    " 現在行の解析
+    let current_line = getline('.')
+    let pattern = '^\s*\(\(public\|protected\|private\)\s\+\)\?\(\(static\|final\)\s\+\)*\([a-zA-Z_][a-zA-Z0-9_<>\[\]]*\)\s\+\([a-zA-Z_][a-zA-Z0-9_]*\)\s*;'
+    let matches = matchlist(current_line, pattern)
+
+    if empty(matches)
+        echo "Error: Not a Java member variable line!"
+        return
+    endif
+
+    " 変数名と型を取得
+    let type = matches[5]
+    let var_name = matches[6]
+
+    " メソッド名作成
+    let capitalized = toupper(var_name[0]) . var_name[1:]
+    let getter_name = "get" . capitalized
+    let setter_name = "set" . capitalized
+
+    " ゲッター
+    let getter = [
+        \ "",
+        \ "    public " . type . " " . getter_name . "() {",
+        \ "        return " . var_name . ";",
+        \ "    }"
+        \ ]
+
+    " セッター
+    let setter = [
+        \ "",
+        \ "    public void " . setter_name . "(" . type . " " . var_name . ") {",
+        \ "        this." . var_name . " = " . var_name . ";",
+        \ "    }"
+        \ ]
+
+    " 両方まとめて
+    let methods = getter + setter
+
+    " クラスの終わりを検出（最後の } の前）
+    let class_end_line = search('^\s*}', 'bnW')
+    if class_end_line == 0
+        let class_end_line = line('$') " ファイル末尾をフォールバック
+    endif
+
+    " 2行前に挿入
+    call append(class_end_line - 1, methods)
+    echo "Generated: " . getter_name . "() and " . setter_name . "()"
+endfunction
+
+nnoremap <Leader>gd :call GenerateJavaGetterSetter()<CR>
+
