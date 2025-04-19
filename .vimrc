@@ -3,6 +3,8 @@
 "-----------------------------------------------------------------
 call plug#begin('~/.vim/plugged')
     Plug 'uiiaoo/java-syntax.vim'
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+    Plug 'junegunn/fzf.vim'
 call plug#end()
 
 "-----------------------------------------------------------------
@@ -84,7 +86,7 @@ nnoremap <C-S-l> <C-w>>
 noremap ; :
 nnoremap <C-n><C-t> :Ntree<Return>
 nnoremap <C-n><C-f> :lcd %:h<Return>
-nnoremap <C-n><C-s> :e ~/.vimrc<Return>
+nnoremap <C-n><C-s> :e ~/workspace/git/vimrc/.vimrc<Return>
 nnoremap <A-j> Vdp
 nnoremap <A-k> VdkP
 nnoremap <silent> <C-j> :bprev<CR>
@@ -244,3 +246,7 @@ endfunction
 
 nnoremap <Leader>gd :call GenerateJavaGetterSetter()<CR>
 
+"-----------------------------------------------------------------
+" FZF
+"-----------------------------------------------------------------
+nnoremap <Leader>f :Files<CR>
