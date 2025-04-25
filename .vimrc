@@ -155,7 +155,7 @@ function! GenerateJavaGetter()
     call append(class_end_line - 1, getter)
     echo "Generated: " . getter_name . "()"
 endfunction
-nnoremap <Leader>gj :call GenerateJavaGetter()<CR>
+nnoremap <Leader>gg :call GenerateJavaGetter()<CR>
 
 " Java Setter
 function! GenerateJavaSetter()
