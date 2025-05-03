@@ -6,6 +6,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
     Plug 'akhaku/vim-java-unused-imports'
+    Plug 'cohama/lexima.vim'
 call plug#end()
 
 "-----------------------------------------------------------------
