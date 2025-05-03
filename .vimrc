@@ -5,6 +5,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'uiiaoo/java-syntax.vim'
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
+    Plug 'akhaku/vim-java-unused-imports'
 call plug#end()
 
 "-----------------------------------------------------------------
@@ -122,6 +123,10 @@ nnoremap <C-r><C-r> G%jVG:s/public/@Override\r\tpublic/g<Return><Esc>G%jVG:s/abs
 vnoremap <C-r><C-i> :s/;/<Space>{\r\t}\r/g<Return>
 " Java Add Override Annotations
 vnoremap <C-r><C-o> :s/public/@Override\r\tpublic/g<Return>
+" Build
+nnoremap <F10> <C-w>j:!sh build.sh<CR>
+" Run
+nnoremap <F12> :!sh run.sh<CR>
 " Java Getter
 function! GenerateJavaGetter()
     " 現在行の解析
@@ -245,6 +250,15 @@ function! GenerateJavaGetterSetter()
 endfunction
 
 nnoremap <Leader>gd :call GenerateJavaGetterSetter()<CR>
+
+" Javaファイル保存時に未使用のimportをハイライト表示
+augroup JavaUnusedImports
+  autocmd!
+  autocmd BufWritePost *.java UnusedImports
+augroup END
+
+" 未使用のimportを削除
+nnoremap <C-S-o> :UnusedImportsRemove<CR>
 
 "-----------------------------------------------------------------
 " FZF
