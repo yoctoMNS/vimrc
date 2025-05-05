@@ -41,6 +41,11 @@ set dictionary=~/.vim/dict/java_all_classes.dict
 set clipboard+=unnamed
 
 "-----------------------------------------------------------------
+" color scheme
+"-----------------------------------------------------------------
+colorscheme retrobox
+
+"-----------------------------------------------------------------
 " appearance
 "-----------------------------------------------------------------
 set cursorline
@@ -260,6 +265,30 @@ augroup END
 
 " 未使用のimportを削除
 nnoremap <C-S-o> :UnusedImportsRemove<CR>
+
+" 実際のクラスライブラリコードを閲覧する
+nnoremap <F3> :!sh ~/openjdk_source.sh<CR>
+
+" ペア文字の自動移動を設定
+function! SkipPair()
+  let line = getline('.')
+  let col = col('.') - 1
+  let next_char = line[col]
+  let pair_list = ['[]', '()', "''", '""', '{}', '<>'] " 対象のペア文字
+
+  for pair in pair_list
+    let open = pair[0]
+    let close = pair[1]
+    if next_char == close
+      return "\<Right>"
+    endif
+  endfor
+
+  return "\<Tab>" " ペア文字でなければ通常のTAB動作
+endfunction
+
+" InsertモードでTABキーをオーバーライド
+inoremap <expr> <Tab> SkipPair()
 
 "-----------------------------------------------------------------
 " FZF
