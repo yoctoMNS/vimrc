@@ -39,11 +39,12 @@ source $VIMRUNTIME/menu.vim
 set statusline=%f%{'['.(&fenc!=''?&fenc:&enc).'-'.&ff.']'}\ \0\x%B%=%l,%c%V%8P
 set dictionary=~/.vim/dict/java_all_classes.dict
 set clipboard+=unnamed
+set noequalalways
 
 "-----------------------------------------------------------------
 " color scheme
 "-----------------------------------------------------------------
-colorscheme retrobox
+colorscheme darkblue
 
 "-----------------------------------------------------------------
 " appearance
@@ -103,10 +104,6 @@ nnoremap <silent> <C-k> :bnext<CR>
 " java
 "-----------------------------------------------------------------
 inoremap <C-c><C-v> <Esc>bvey$pa;<Esc>bvu$a
-" Java Insert Class Snippet
-nnoremap <C-c><C-c> i<C-r>=expand('%:r')<Return><Esc>T/hv^dIpublic<Space>class<Space><Esc>$a<Space>{<Return>}<Esc>gg$a<Return>
-" Java Insert Package Snippet
-inoremap <C-c><C-u> i<C-r>=expand('%:r')<Return><Esc>^vt/ld$vbhdV:s/\//\./g<Return>
 " Java Override
 inoremap <C-c><C-o> @Override<Return>
 " Java Import Snippet
@@ -289,6 +286,40 @@ endfunction
 
 " InsertモードでTABキーをオーバーライド
 inoremap <expr> <Tab> SkipPair()
+
+" Javaファイルで <C-c><C-c> を押すと自動で package と class を挿入する
+augroup JavaClassInsert
+  autocmd!
+  autocmd FileType java nnoremap <buffer> <C-c><C-c> :call InsertJavaBoilerplate()<CR>
+augroup END
+
+function! InsertJavaBoilerplate()
+  " カレントファイルのパスを取得
+  let l:filepath = expand('%:p')
+  let l:filename = expand('%:t:r')  " 拡張子なしのファイル名
+
+  " src ディレクトリ以下を基準にしてパッケージを推測
+  if l:filepath =~# 'src/'
+    let l:relpath = substitute(l:filepath, '.*src/', '', '')
+  else
+    let l:relpath = substitute(l:filepath, getcwd().'/', '', '')
+  endif
+
+  " パッケージ名をディレクトリ構造から生成
+  let l:packagedir = substitute(l:relpath, '/' . l:filename . '\.java$', '', '')
+  let l:packagename = substitute(l:packagedir, '/', '.', 'g')
+
+  " 行の先頭に package と class を挿入
+  call append(0, 'package ' . l:packagename . ';')
+  call append(1, '')
+  call append(2, 'public class ' . l:filename . ' {')
+  call append(3, '')
+  call append(4, '}')
+
+  " カーソルを class の中に移動
+  call cursor(4, 1)
+endfunction
+
 
 "-----------------------------------------------------------------
 " FZF
