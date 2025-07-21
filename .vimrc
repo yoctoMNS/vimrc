@@ -1,5 +1,5 @@
 "-----------------------------------------------------------------
-" Encoding
+" Plugin
 "-----------------------------------------------------------------
 call plug#begin('~/.vim/plugged')
     Plug 'uiiaoo/java-syntax.vim'
@@ -7,7 +7,16 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/fzf.vim'
     Plug 'akhaku/vim-java-unused-imports'
     Plug 'cohama/lexima.vim'
+    Plug 'tikhomirov/vim-glsl'
 call plug#end()
+
+"-----------------------------------------------------------------
+" Startup
+"-----------------------------------------------------------------
+augroup MyAutoResize
+  autocmd!
+  autocmd VimEnter * :35split | wincmd j | :terminal
+augroup END
 
 "-----------------------------------------------------------------
 " Encoding
@@ -21,7 +30,6 @@ set fileencodings=utf-8,euc-jp,sjis
 "-----------------------------------------------------------------
 set nobackup
 set noswapfile
-set autoread
 set viminfo=
 set noundofile
 set hidden
@@ -40,21 +48,26 @@ set statusline=%f%{'['.(&fenc!=''?&fenc:&enc).'-'.&ff.']'}\ \0\x%B%=%l,%c%V%8P
 set dictionary=~/.vim/dict/java_all_classes.dict
 set clipboard+=unnamed
 set noequalalways
+set autoread
+set updatetime=100
+au CursorHold * checktime
 
 "-----------------------------------------------------------------
 " color scheme
 "-----------------------------------------------------------------
-colorscheme darkblue
+colorscheme  elflord
 
 "-----------------------------------------------------------------
 " appearance
 "-----------------------------------------------------------------
-set cursorline
+" set cursorline
 " set visualbell
-set showmatch
+set noshowmatch
 set laststatus=2
 set wildmode=list:longest
 set nonumber
+highlight Normal guibg=NONE ctermbg=NONE
+highlight NonText guibg=NONE ctermbg=NONE
 
 "-----------------------------------------------------------------
 " Tab
@@ -75,8 +88,8 @@ set hlsearch
 " key mapping
 "-----------------------------------------------------------------
 nnoremap <Esc><Esc> :nohlsearch<Return>
-inoremap ;lkj <Esc>:w<CR>
-inoremap <C-]> <Esc>
+inoremap <C-]> <C-[>:w<CR>
+inoremap <C-[> <Esc>:w<CR>
 nnoremap ss :<C-u>sp<CR>
 nnoremap sv :<C-u>vs<CR>
 nnoremap sj <C-w>j
@@ -309,17 +322,31 @@ function! InsertJavaBoilerplate()
   let l:packagedir = substitute(l:relpath, '/' . l:filename . '\.java$', '', '')
   let l:packagename = substitute(l:packagedir, '/', '.', 'g')
 
-  " 行の先頭に package と class を挿入
-  call append(0, 'package ' . l:packagename . ';')
-  call append(1, '')
-  call append(2, 'public class ' . l:filename . ' {')
-  call append(3, '')
-  call append(4, '}')
+  " すべての 'main.java' を含む部分（ドット含む）を削除
+  " 例: 'main.java.shaders' → 'shaders'
+  let l:packagename = substitute(l:packagename, '\(.*\.\)\?main\.java\(\.\|$\)', '', 'g')
+
+  " 末尾に余計なドットが残る場合はさらに除去
+  let l:packagename = substitute(l:packagename, '^\.\+', '', '')
+  let l:packagename = substitute(l:packagename, '\.\+$', '', '')
+
+  " 空のパッケージ名は挿入しない
+  if len(l:packagename) > 0
+    call append(0, 'package ' . l:packagename . ';')
+    call append(1, '')
+    let l:startline = 2
+  else
+    let l:startline = 0
+  endif
+
+  " class 文を挿入
+  call append(l:startline, 'public class ' . l:filename . ' {')
+  call append(l:startline + 1, '')
+  call append(l:startline + 2, '}')
 
   " カーソルを class の中に移動
-  call cursor(4, 1)
+  call cursor(l:startline + 2, 1)
 endfunction
-
 
 "-----------------------------------------------------------------
 " FZF
