@@ -8,6 +8,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'akhaku/vim-java-unused-imports'
     Plug 'cohama/lexima.vim'
     Plug 'tikhomirov/vim-glsl'
+    Plug 'rebelot/kanagawa.nvim'
 call plug#end()
 
 "-----------------------------------------------------------------
@@ -15,8 +16,11 @@ call plug#end()
 "-----------------------------------------------------------------
 augroup MyAutoResize
   autocmd!
-  autocmd VimEnter * :35split | wincmd j | :terminal
+  autocmd VimEnter *.java :35split | wincmd j | :terminal
 augroup END
+
+highlight clear Bold
+highlight clear bold
 
 "-----------------------------------------------------------------
 " Encoding
@@ -55,7 +59,8 @@ au CursorHold * checktime
 "-----------------------------------------------------------------
 " color scheme
 "-----------------------------------------------------------------
-colorscheme  elflord
+" colorscheme  elflord
+colorscheme  kanagawa
 
 "-----------------------------------------------------------------
 " appearance
