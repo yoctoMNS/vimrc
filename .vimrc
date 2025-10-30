@@ -1,6 +1,11 @@
 "-----------------------------------------------------------------
 " Plugin
 "-----------------------------------------------------------------
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 call plug#begin('~/.vim/plugged')
     Plug 'uiiaoo/java-syntax.vim'
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -10,17 +15,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'tikhomirov/vim-glsl'
     Plug 'rebelot/kanagawa.nvim'
 call plug#end()
-
-"-----------------------------------------------------------------
-" Startup
-"-----------------------------------------------------------------
-augroup MyAutoResize
-  autocmd!
-  autocmd VimEnter *.java :35split | wincmd j | :terminal
-augroup END
-
-highlight clear Bold
-highlight clear bold
 
 "-----------------------------------------------------------------
 " Encoding
@@ -119,6 +113,11 @@ nnoremap <silent> <C-j> :bprev<CR>
 nnoremap <silent> <C-k> :bnext<CR>
 
 "-----------------------------------------------------------------
+" cpp
+"-----------------------------------------------------------------
+nnoremap <C-n><C-p> :lcd /usr/include/<CR>:Files<CR>
+
+"-----------------------------------------------------------------
 " java
 "-----------------------------------------------------------------
 inoremap <C-c><C-v> <Esc>bvey$pa;<Esc>bvu$a
@@ -139,7 +138,7 @@ inoremap <C-c><C-l> System.out.printf();<Left><left>
 " Java Main Method Snippet
 inoremap <C-c><C-m> public<Space>static<Space>void<Space>main(String[]<Space>args)<Space>{<Return>}<Esc>k$a<Return>
 " Java Implements Abstract Method
-nnoremap <C-r><C-r> G%jVG:s/public/@Override\r\tpublic/g<Return><Esc>G%jVG:s/abstract //g<Return>G%jVG:s/;/<Space>{\r\t}\r/g<Return>
+nnoremap <C-r><C-r> V:s/public abstract/@Override\r\tpublic/g<CR>V:s/;/ {\r\t}/g<CR>
 " Java Implements Interface Method
 vnoremap <C-r><C-i> :s/;/<Space>{\r\t}\r/g<Return>
 " Java Add Override Annotations
