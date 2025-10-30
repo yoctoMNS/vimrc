@@ -8,12 +8,13 @@ if empty(glob(data_dir . '/autoload/plug.vim'))
 endif
 call plug#begin('~/.vim/plugged')
     Plug 'uiiaoo/java-syntax.vim'
-    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-    Plug 'junegunn/fzf.vim'
     Plug 'akhaku/vim-java-unused-imports'
     Plug 'cohama/lexima.vim'
     Plug 'tikhomirov/vim-glsl'
     Plug 'rebelot/kanagawa.nvim'
+    Plug 'nvim-lua/plenary.nvim'
+    Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.8' }
+    Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 call plug#end()
 
 "-----------------------------------------------------------------
@@ -353,6 +354,18 @@ function! InsertJavaBoilerplate()
 endfunction
 
 "-----------------------------------------------------------------
-" FZF
+" Telescope
 "-----------------------------------------------------------------
-nnoremap <Leader>f :Files<CR>
+lua << EOF
+require('telescope').setup{
+  defaults = {
+    file_ignore_patterns = { "bin/", ".git/" },
+  }
+}
+EOF
+nnoremap <leader>f <cmd>lua require('telescope.builtin').find_files()<CR>
+nnoremap <leader>g <cmd>lua require('telescope.builtin').live_grep()<CR>
+nnoremap <leader>b <cmd>lua require('telescope.builtin').buffers()<CR>
+nnoremap <leader>h <cmd>lua require('telescope.builtin').help_tags()<CR>
+nnoremap <leader>w <cmd>lua require('telescope.builtin').grep_string()<CR>
+nnoremap <leader>/ <cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<CR>
