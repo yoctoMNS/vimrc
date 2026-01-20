@@ -9,14 +9,13 @@ endif
 call plug#begin('~/.vim/plugged')
     Plug 'uiiaoo/java-syntax.vim'
     Plug 'akhaku/vim-java-unused-imports'
-    Plug 'cohama/lexima.vim'
     Plug 'tikhomirov/vim-glsl'
-    Plug 'rebelot/kanagawa.nvim'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.8' }
     Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
+    Plug 'octol/vim-cpp-enhanced-highlight'
+    Plug 'cohama/lexima.vim'
 call plug#end()
-
 "-----------------------------------------------------------------
 " Encoding
 "-----------------------------------------------------------------
@@ -36,7 +35,7 @@ set noshowcmd
 set cindent
 set iminsert=0
 set imsearch=-1
-set guicursor=a:blinkon0
+set guicursor=
 syntax on
 set nowrap
 set guioptions-=T
@@ -50,12 +49,26 @@ set noequalalways
 set autoread
 set updatetime=100
 au CursorHold * checktime
+set ambiwidth=double
 
 "-----------------------------------------------------------------
 " color scheme
 "-----------------------------------------------------------------
-" colorscheme  elflord
-colorscheme  kanagawa
+augroup DisableAllBold
+  autocmd!
+  autocmd ColorScheme * call DisableAllBold()
+augroup END
+
+function! DisableAllBold()
+  for l:group in getcompletion('', 'highlight')
+    let l:hl = execute('highlight ' . l:group)
+    if l:hl =~# 'bold'
+      execute 'highlight' l:group 'gui=NONE cterm=NONE'
+    endif
+  endfor
+endfunction
+" colorscheme morning
+colorscheme koehler
 
 "-----------------------------------------------------------------
 " appearance
@@ -310,7 +323,6 @@ augroup JavaClassInsert
   autocmd!
   autocmd FileType java nnoremap <buffer> <C-c><C-c> :call InsertJavaBoilerplate()<CR>
 augroup END
-
 function! InsertJavaBoilerplate()
   " カレントファイルのパスを取得
   let l:filepath = expand('%:p')
@@ -335,22 +347,32 @@ function! InsertJavaBoilerplate()
   let l:packagename = substitute(l:packagename, '^\.\+', '', '')
   let l:packagename = substitute(l:packagename, '\.\+$', '', '')
 
+  " バッファの内容を一旦すべて削除
+  silent %delete _
+
+  " 挿入する行を配列として準備
+  let l:lines = []
+
   " 空のパッケージ名は挿入しない
   if len(l:packagename) > 0
-    call append(0, 'package ' . l:packagename . ';')
-    call append(1, '')
-    let l:startline = 2
-  else
-    let l:startline = 0
+    call add(l:lines, 'package ' . l:packagename . ';')
+    call add(l:lines, '')
   endif
 
-  " class 文を挿入
-  call append(l:startline, 'public class ' . l:filename . ' {')
-  call append(l:startline + 1, '')
-  call append(l:startline + 2, '}')
+  " class 文を追加
+  call add(l:lines, 'public class ' . l:filename . ' {')
+  call add(l:lines, '')
+  call add(l:lines, '}')
+
+  " バッファに一括挿入
+  call setline(1, l:lines)
 
   " カーソルを class の中に移動
-  call cursor(l:startline + 2, 1)
+  if len(l:packagename) > 0
+    call cursor(4, 1)  " package行がある場合
+  else
+    call cursor(2, 1)  " package行がない場合
+  endif
 endfunction
 
 "-----------------------------------------------------------------
@@ -363,6 +385,7 @@ require('telescope').setup{
   }
 }
 EOF
+
 nnoremap <leader>f <cmd>lua require('telescope.builtin').find_files()<CR>
 nnoremap <leader>g <cmd>lua require('telescope.builtin').live_grep()<CR>
 nnoremap <leader>b <cmd>lua require('telescope.builtin').buffers()<CR>
